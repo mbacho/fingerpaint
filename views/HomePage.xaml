@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -18,7 +19,7 @@
 
         <Grid x:Name="ContentPanel" Margin="12,0,12,0" Background="BurlyWood" >
             <StackPanel>
-                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="100" Name="lst" DataContext="{Binding}" ItemsSource="{Binding}" HorizontalAlignment="Stretch">
+                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="100" Name="lst" DataContext="{Binding}" ItemsSource="{Binding}" HorizontalAlignment="Stretch" >
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal" />
@@ -29,6 +30,7 @@
                             <Rectangle Margin="10,10,10,10" Width="80" Height="80" Fill="{Binding}"></Rectangle>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
+
                 </ListBox>
                 
                 <Canvas Name="canvas"  Margin="10,10,10,10" MouseMove="rct_MouseMove" >

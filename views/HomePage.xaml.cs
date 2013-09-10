@@ -16,6 +16,13 @@ namespace FingerPaint.views
     public partial class HomePage : PhoneApplicationPage
     {
         private List<SolidColorBrush> colors;
+
+        private double point;
+        private bool hasPressure;
+        private SettingsPage.SHAPES shape;
+        public readonly static string PREF_COLOR = "color";
+        private IsolatedStorageSettings sets = IsolatedStorageSettings.ApplicationSettings;
+
         public HomePage()
         {
             InitializeComponent();
@@ -31,6 +38,7 @@ namespace FingerPaint.views
             };
             lst.DataContext = colors;
             lst.SelectionChanged += new SelectionChangedEventHandler(lst_SelectionChanged);
+
         }
 
         private void lst_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -41,44 +49,53 @@ namespace FingerPaint.views
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            PhoneApplicationService.Current.State["color"] = lst.SelectedItem;
+            sets[PREF_COLOR] = lst.SelectedIndex;
+            sets[SettingsPage.PREF_POINT] = point;
+            sets[SettingsPage.PREF_PRESSURE] = hasPressure;
+            sets[SettingsPage.PREF_SHAPE] = shape;
+            sets.Save();
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (PhoneApplicationService.Current.State.ContainsKey("color"))
-                lst.SelectedItem = PhoneApplicationService.Current.State["color"];
+            if (sets.Contains(SettingsPage.PREF_POINT)) { point = (double)sets[SettingsPage.PREF_POINT]; }
+            if (sets.Contains(SettingsPage.PREF_PRESSURE)) { hasPressure = (bool)sets[SettingsPage.PREF_PRESSURE]; }
+            if (sets.Contains(SettingsPage.PREF_SHAPE)) { shape = (SettingsPage.SHAPES)sets[SettingsPage.PREF_SHAPE]; }
+            if (sets.Contains(PREF_COLOR)) { lst.SelectedIndex = (int)sets[PREF_COLOR]; }
         }
 
         private void rct_MouseMove(object sender, MouseEventArgs e)
         {
+            Shape s = null;
+            int norm = (int)point; int change = 10;
+
+            switch (shape)
+            {
+                case SettingsPage.SHAPES.CIRCLE: s = new Ellipse { Width = norm, Height = norm }; break;
+                case SettingsPage.SHAPES.OVAL_H: s = new Ellipse { Width = norm - change, Height = norm }; break;
+                case SettingsPage.SHAPES.OVAL_W: s = new Ellipse { Width = norm, Height = norm - change }; break;
+                case SettingsPage.SHAPES.RECTANGLE_H: s = new Rectangle { Width = norm - change, Height = norm }; break;
+                case SettingsPage.SHAPES.RECTANGLE_W: s = new Rectangle { Width = norm, Height = norm - change }; break;
+                case SettingsPage.SHAPES.SQUARE: s = new Rectangle { Width = norm, Height = norm }; break;
+                default: break;
+            }
             foreach (StylusPoint p in e.StylusDevice.GetStylusPoints(canvas))
             {
-                paintShape((SolidColorBrush)lst.SelectedItem, p, new Ellipse());
+                paintShape((SolidColorBrush)lst.SelectedItem, p, s);
             }
         }
 
         private void paintShape(Brush color, StylusPoint p, Shape shape)
         {
-            shape.SetValue(Canvas.LeftProperty, p.X);
-            shape.SetValue(Canvas.TopProperty, p.Y);
-            shape.Opacity = p.PressureFactor;
-            shape.Width = 20d;
-            shape.Height = 20d;
+            shape.SetValue(Canvas.LeftProperty, p.X - shape.Width / 2);
+            shape.SetValue(Canvas.TopProperty, p.Y - shape.Height / 2);
+            if (hasPressure)
+                shape.Opacity = p.PressureFactor;
+
             shape.IsHitTestVisible = false;
             shape.Stroke = shape.Fill = rct.Stroke;
             canvas.Children.Add(shape);
-        }
-
-        private bool pointInRect(Point p)
-        {
-            return true;
-
-            Point origin = new Point(rct.Clip.Bounds.X, rct.Clip.Bounds.Y);
-            double height = rct.Height, width = rct.Width;
-            double h_temp = p.X - origin.X, w_temp = p.Y - origin.Y;
-            return (h_temp > 0) && (w_temp > 0) && (h_temp < height) && (w_temp < width);
         }
 
         private void mnuSave_Click(object sender, EventArgs e)

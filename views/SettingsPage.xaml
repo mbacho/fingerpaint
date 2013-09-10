@@ -31,29 +31,22 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel>
                 <StackPanel>
-                    <TextBlock Text="Point size"></TextBlock>
-                    <Slider Minimum="1" Maximum="100" Value="{Binding}" DataContext="{Binding Path=size}" Name="sld"></Slider>
+                    <TextBlock Text="Brush size"></TextBlock>
+                    <Slider Minimum="20"  Maximum="100"  Name="sld" ></Slider>
                 </StackPanel>
                 <StackPanel>
-                    <TextBlock Text="Shape"></TextBlock>
-                    <toolkit:ListPicker  >
-                        <toolkit:ListPickerItem>
-                            <TextBlock Text="Ellipse"></TextBlock>
-                        </toolkit:ListPickerItem>
-                        <toolkit:ListPickerItem>
-                            <TextBlock Text="Square"></TextBlock>
-                        </toolkit:ListPickerItem>
-                        <toolkit:ListPickerItem>
-                            <TextBlock Text="Rectangle (longer width)"></TextBlock>
-                        </toolkit:ListPickerItem>
-                        <toolkit:ListPickerItem>
-                            <TextBlock Text="Rectangle (longer height)"></TextBlock>
-                        </toolkit:ListPickerItem>
-                    </toolkit:ListPicker>
+                    <TextBlock Text="Brush Shape"></TextBlock>
+                    <ListBox Name="lst" ItemsSource="{Binding}" DataContext="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Stretch" Height="100">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
                 </StackPanel>
                 <StackPanel>
                     <TextBlock Text="Pressure sensitive"></TextBlock>
-                    <toolkit:ToggleSwitch></toolkit:ToggleSwitch>
+                    <toolkit:ToggleSwitch Name="tgl"></toolkit:ToggleSwitch>
                 </StackPanel>
             </StackPanel>
         </Grid>
