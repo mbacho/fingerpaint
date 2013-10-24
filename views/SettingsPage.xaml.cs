@@ -21,6 +21,7 @@ namespace FingerPaint.views
         public readonly static string PREF_POINT = "point";
         public readonly static string PREF_SHAPE = "shape";
         public readonly static string PREF_PRESSURE = "pressure";
+        public readonly static string PREF_COLOR = "color";
         public enum SHAPES
         {
             CIRCLE, OVAL_W, OVAL_H, SQUARE, RECTANGLE_W, RECTANGLE_H
@@ -48,7 +49,7 @@ namespace FingerPaint.views
         {
             base.OnNavigatedFrom(e);
 
-            sets[PREF_POINT] = sld.Value;
+            sets[PREF_POINT] = (int)sld.Value;
             sets[PREF_PRESSURE] = tgl.IsChecked;
             sets[PREF_SHAPE] = lst.SelectedIndex;
             sets.Save();
@@ -56,7 +57,7 @@ namespace FingerPaint.views
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (sets.Contains(PREF_POINT)) { sld.Value = (double)sets[SettingsPage.PREF_POINT]; }
+            if (sets.Contains(PREF_POINT)) { sld.Value = (int)sets[SettingsPage.PREF_POINT]; }
             if (sets.Contains(PREF_PRESSURE)) { tgl.IsChecked = (bool)sets[SettingsPage.PREF_PRESSURE]; }
             if (sets.Contains(PREF_SHAPE)) { lst.SelectedIndex = (int)sets[SettingsPage.PREF_SHAPE]; }
 

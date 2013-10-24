@@ -12,6 +12,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using System.IO.IsolatedStorage;
+using FingerPaint.views;
 
 namespace FingerPaint
 {
@@ -63,6 +65,11 @@ namespace FingerPaint
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            IsolatedStorageSettings sets = IsolatedStorageSettings.ApplicationSettings;
+            if (!sets.Contains(SettingsPage.PREF_POINT)) { sets[SettingsPage.PREF_POINT] = 20; }
+            if (!sets.Contains(SettingsPage.PREF_PRESSURE)) { sets[SettingsPage.PREF_PRESSURE] = false; }
+            if (!sets.Contains(SettingsPage.PREF_SHAPE)) { sets[SettingsPage.PREF_SHAPE] = 0; }
+            if (!sets.Contains(SettingsPage.PREF_COLOR)) { sets[SettingsPage.PREF_COLOR] = 0; }
         }
 
         // Code to execute when the application is activated (brought to foreground)

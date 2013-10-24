@@ -7,19 +7,22 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="clr-namespace:FingerPaint.views"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
-
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="False">
+    <phone:PhoneApplicationPage.Resources>
+        <converters:VisibleSelectedConverter x:Key="conv" />
+    </phone:PhoneApplicationPage.Resources>
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent" >
 
-        <Grid x:Name="ContentPanel" Margin="12,0,12,0" Background="BurlyWood" >
+        <Grid x:Name="ContentPanel" Margin="0,0,0,0" Background="BurlyWood" >
             <StackPanel>
-                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="100" Name="lst" DataContext="{Binding}" ItemsSource="{Binding}" HorizontalAlignment="Stretch" >
+                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="90" Name="lstColor" DataContext="{Binding}" ItemsSource="{Binding}" HorizontalAlignment="Stretch" >
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal" />
@@ -27,22 +30,25 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Rectangle Margin="10,10,10,10" Width="80" Height="80" Fill="{Binding}"></Rectangle>
+                            <Grid>
+                                <Rectangle Margin="0,0,0,0" Width="100" Height="100" Fill="Chocolate" Visibility="{Binding}" />
+                                           <!--Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={ x:Type ListBoxItem }},Path=IsSelected, Converter={StaticResource conv}}"/>-->
+                                <Rectangle Margin="5,5,5,5" Width="80" Height="80" Fill="{Binding}"/>
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
-
                 </ListBox>
-                
-                <Canvas Name="canvas"  Margin="10,10,10,10" MouseMove="rct_MouseMove" >
-                    <Rectangle MouseMove="rct_MouseMove" Name="rct" Fill="White" Height="620" Width="440" Stroke="{StaticResource PhoneAccentBrush}"></Rectangle>
+                <Canvas Name="canvas"  Margin="5,5,5,5" MouseMove="rct_MouseMove" >
+                    <Rectangle MouseMove="rct_MouseMove" Name="rct" Fill="WhiteSmoke" Height="650" Width="470" Stroke="{StaticResource PhoneAccentBrush}"></Rectangle>
                 </Canvas>
             </StackPanel>
         </Grid>
     </Grid>
 
     <!--Sample code showing usage of ApplicationBar-->
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" Mode="Minimized">
+    <phone:PhoneApplicationPage.ApplicationBar >
+
+        <shell:ApplicationBar IsVisible="True" Opacity="0.7" IsMenuEnabled="True" Mode="Minimized">
             <shell:ApplicationBarIconButton IconUri="/images/save.png" Text="save" x:Name="mnuSave" Click="mnuSave_Click"/>
             <shell:ApplicationBarIconButton IconUri="/images/clear.png" Text="clear" x:Name="mnuClear" Click="mnuClear_Click"/>
             <shell:ApplicationBarIconButton IconUri="/images/settings.png" Text="settings" x:Name="mnuSettings" Click="mnuSettings_Click"/>
