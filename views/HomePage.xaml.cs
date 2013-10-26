@@ -11,59 +11,76 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using Microsoft.Phone.Shell;
 using System.Windows.Data;
+using Coding4Fun.Toolkit.Controls;
 
 namespace FingerPaint.views
 {
     public partial class HomePage : PhoneApplicationPage
     {
-        private List<SolidColorBrush> colors;
-
         private int point;
         private bool hasPressure;
-        private SettingsPage.SHAPES shape;
         private IsolatedStorageSettings sets = IsolatedStorageSettings.ApplicationSettings;
+
+        public readonly static string PREF_POINT = "point";
+        public readonly static string PREF_SHAPE = "shape";
+        public readonly static string PREF_PRESSURE = "pressure";
+        public readonly static string PREF_COLOR_A = "color_alpha";
+        public readonly static string PREF_COLOR_R = "color_red";
+        public readonly static string PREF_COLOR_G = "color_green";
+        public readonly static string PREF_COLOR_B = "color_blue";
+        private SHAPES shape;
+
+        public enum SHAPES
+        {
+            CIRCLE, OVAL_W, OVAL_H, SQUARE, RECTANGLE_W, RECTANGLE_H
+        };
+
+        public List<Shape> shapeList;
 
         public HomePage()
         {
             InitializeComponent();
-
-            colors = new List<SolidColorBrush>() { 
-                 new SolidColorBrush(Colors.Cyan), new SolidColorBrush(Colors.Blue), new SolidColorBrush(Colors.Purple) ,
-                new SolidColorBrush(Colors.Brown),new SolidColorBrush(Colors.Red),
-                new SolidColorBrush(Colors.Green) ,
-                new SolidColorBrush(Colors.Magenta) ,new SolidColorBrush(Colors.Orange),
-                new SolidColorBrush(Colors.Yellow) ,
-                new SolidColorBrush(Colors.White), 
-                new SolidColorBrush(Colors.LightGray),new SolidColorBrush(Colors.DarkGray), new SolidColorBrush(Colors.Gray),
-                new SolidColorBrush(Colors.Black)
+            SolidColorBrush scb = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
+            Thickness m = new Thickness { Bottom = 10, Left = 10, Right = 10, Top = 10 };
+            shapeList = new List<Shape>() { 
+                new Ellipse{Width=70, Height=70, Fill=scb,Stroke=scb, Margin=m},
+                new Ellipse{Width=70, Height=50, Fill=scb,Stroke=scb, Margin=m},
+                new Ellipse{Width=50, Height=70, Fill=scb,Stroke=scb, Margin=m},
+                new Rectangle{Width=70, Height=70, Fill=scb,Stroke=scb, Margin=m},
+                new Rectangle{Width=70, Height=50, Fill=scb,Stroke=scb, Margin=m},
+                new Rectangle{Width=50, Height=70, Fill=scb,Stroke=scb, Margin=m}
             };
-            lstColor.DataContext = colors;
-            lstColor.SelectionChanged += new SelectionChangedEventHandler(lst_SelectionChanged);
-
-        }
-
-        private void lst_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            rct.Stroke = (SolidColorBrush)((ListBox)sender).SelectedItem;
+            lst.DataContext = shapeList;
+            lst.SelectionChanged += (sender, args) => { sets[PREF_SHAPE] = lst.SelectedIndex; sets.Save(); rct.Stroke = ((Shape)lst.SelectedValue).Stroke; };
+            tgl.Checked += (sender,args) => { sets[PREF_PRESSURE] = tgl.IsChecked;sets.Save(); };
+            sld.ValueChanged += (sender,args) => { sets[PREF_POINT] = (int)sld.Value;sets.Save(); };
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            sets[SettingsPage.PREF_COLOR] = lstColor.SelectedIndex;
-            sets[SettingsPage.PREF_POINT] = point;
-            sets[SettingsPage.PREF_PRESSURE] = hasPressure;
-            sets[SettingsPage.PREF_SHAPE] = shape;
+            sets[PREF_COLOR_R] = colPicker.Color.R;
+            sets[PREF_COLOR_G] = colPicker.Color.G;
+            sets[PREF_COLOR_B] = colPicker.Color.B;
+            sets[PREF_COLOR_A] = colPicker.Color.A;
+
+            sets[PREF_POINT] = point;
+            sets[PREF_PRESSURE] = hasPressure;
+            sets[PREF_SHAPE] = shape;
             sets.Save();
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (sets.Contains(SettingsPage.PREF_POINT)) { point = (int)sets[SettingsPage.PREF_POINT]; }
-            if (sets.Contains(SettingsPage.PREF_PRESSURE)) { hasPressure = (bool)sets[SettingsPage.PREF_PRESSURE]; }
-            if (sets.Contains(SettingsPage.PREF_SHAPE)) { shape = (SettingsPage.SHAPES)sets[SettingsPage.PREF_SHAPE]; }
-            if (sets.Contains(SettingsPage.PREF_COLOR)) { lstColor.SelectedIndex = (int)sets[SettingsPage.PREF_COLOR]; }
+            if (sets.Contains(PREF_POINT)) { point = (int)sets[PREF_POINT]; }
+            if (sets.Contains(PREF_PRESSURE)) { hasPressure = (bool)sets[PREF_PRESSURE]; }
+            if (sets.Contains(PREF_SHAPE)) { shape = (SHAPES)sets[PREF_SHAPE]; }
+            //if (sets.Contains(SettingsPage.PREF_COLOR)) { lstColor.SelectedIndex = (int)sets[SettingsPage.PREF_COLOR]; }
+            //if (sets.Contains(PREF_COLOR_R)) { colPicker.Color.R = colPicker.Color.R; }
+            //if (sets.Contains(PREF_COLOR_G)) { colPicker.Color.G = colPicker.Color.G; }
+            //if (sets.Contains(PREF_COLOR_B)) { colPicker.Color.B = colPicker.Color.B; }
+            //if (sets.Contains(PREF_COLOR_A)) { colPicker.Color.A = colPicker.Color.A; }
         }
 
         private void rct_MouseMove(object sender, MouseEventArgs e)
@@ -73,17 +90,17 @@ namespace FingerPaint.views
 
             switch (shape)
             {
-                case SettingsPage.SHAPES.CIRCLE: s = new Ellipse { Width = norm, Height = norm }; break;
-                case SettingsPage.SHAPES.OVAL_H: s = new Ellipse { Width = norm - change, Height = norm }; break;
-                case SettingsPage.SHAPES.OVAL_W: s = new Ellipse { Width = norm, Height = norm - change }; break;
-                case SettingsPage.SHAPES.RECTANGLE_H: s = new Rectangle { Width = norm - change, Height = norm }; break;
-                case SettingsPage.SHAPES.RECTANGLE_W: s = new Rectangle { Width = norm, Height = norm - change }; break;
-                case SettingsPage.SHAPES.SQUARE: s = new Rectangle { Width = norm, Height = norm }; break;
+                case SHAPES.CIRCLE: s = new Ellipse { Width = norm, Height = norm }; break;
+                case SHAPES.OVAL_H: s = new Ellipse { Width = norm - change, Height = norm }; break;
+                case SHAPES.OVAL_W: s = new Ellipse { Width = norm, Height = norm - change }; break;
+                case SHAPES.RECTANGLE_H: s = new Rectangle { Width = norm - change, Height = norm }; break;
+                case SHAPES.RECTANGLE_W: s = new Rectangle { Width = norm, Height = norm - change }; break;
+                case SHAPES.SQUARE: s = new Rectangle { Width = norm, Height = norm }; break;
                 default: break;
             }
             foreach (StylusPoint p in e.StylusDevice.GetStylusPoints(canvas))
             {
-                paintShape((SolidColorBrush)lstColor.SelectedItem, p, s);
+                paintShape(colPicker.SolidColorBrush, p, s);
             }
         }
 
@@ -127,6 +144,20 @@ namespace FingerPaint.views
         private void mnuSettings_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/views/SettingsPage.xaml", UriKind.Relative));
+        }
+
+        private void colPicker_ColorChanged(object sender, Color color)
+        {
+            SolidColorBrush brush = ((ColorBaseControl)sender).SolidColorBrush;
+            rct.Stroke = brush;
+        }
+
+        private void btnSetts_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Visibility vis = (stckSett.Visibility == System.Windows.Visibility.Collapsed) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed,
+                                     visOpp = (vis == System.Windows.Visibility.Collapsed) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+            stckSett.Visibility = vis;
+            colSlider.Visibility = visOpp;
         }
     }
 

@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:coding4fun="clr-namespace:Coding4Fun.Toolkit.Controls;assembly=Coding4Fun.Toolkit.Controls"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,28 +17,114 @@
     shell:SystemTray.IsVisible="False">
     <phone:PhoneApplicationPage.Resources>
         <converters:VisibleSelectedConverter x:Key="conv" />
+        <Style TargetType="coding4fun:ColorSlider" x:Name="colSliderStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid Name="Body">
+                            <Rectangle Name="SelectedColor" Margin="5,5,5,5" Fill="{TemplateBinding SolidColorBrush}" />
+                            <coding4fun:SuperSlider x:Name="Slider" Orientation="{TemplateBinding Orientation}" Minimum="0" Maximum="254">
+                                <coding4fun:SuperSlider.Thumb>
+                                    <Grid>
+                                        <Image Source="/Coding4Fun.Toolkit.Controls;Component/" />
+                                    </Grid>
+                                </coding4fun:SuperSlider.Thumb>
+                            </coding4fun:SuperSlider>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style TargetType="coding4fun:ColorPicker" x:Key="colPickerStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="coding4fun:ColorPicker">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <coding4fun:ColorSlider Color="{Binding ElementName=colSlider,Path=Color,Mode=TwoWay}" IsColorVisible="false" x:Name="ColorSlider" Grid.Row="1"/>
+                            <Grid Name="Body" Grid.Column="1" Grid.Row="1">
+                                <Rectangle Name="SelectedHueColor" Fill="Red" />
+                                <Rectangle>
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Offset="0" Color="White"/>
+                                            <GradientStop Offset="1" Color="Transparent"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Rectangle>
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,1" EndPoint="0, 0">
+                                            <GradientStop Offset="0" Color="Black"/>
+                                            <GradientStop Offset="1" Color="Transparent"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Grid Name="SampleSelector" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <Image Source="/Coding4Fun.Toolkit.Controls;Component/"  Height="50" Width="50"/>
+                                </Grid>
+                            </Grid>
+                            <Rectangle Margin="0,10,0,12" Height="24" Grid.Row="2" Grid.ColumnSpan="2" Fill="{TemplateBinding SolidColorBrush}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </phone:PhoneApplicationPage.Resources>
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent" >
 
         <Grid x:Name="ContentPanel" Margin="0,0,0,0" Background="BurlyWood" >
             <StackPanel>
-                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="90" Name="lstColor" DataContext="{Binding}" ItemsSource="{Binding}" HorizontalAlignment="Stretch" >
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Rectangle Margin="0,0,0,0" Width="100" Height="100" Fill="Chocolate" Visibility="{Binding}" />
-                                           <!--Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={ x:Type ListBoxItem }},Path=IsSelected, Converter={StaticResource conv}}"/>-->
-                                <Rectangle Margin="5,5,5,5" Width="80" Height="80" Fill="{Binding}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <Grid  Margin="5,5,5,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="70" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <coding4fun:ColorSlider HorizontalAlignment="Stretch" Color="{Binding ElementName=colPicker,Path=Color,Mode=TwoWay}" Height="70" Orientation="Horizontal" ColorChanged="colPicker_ColorChanged" Name="colSlider" Grid.Column="0" Grid.Row="0" />
+                    <Button Margin="0,0,0,0" Padding="0,0,0,0" Name="btnSetts" Click="btnSetts_Click" Grid.Column="1"  Grid.Row="0" Width="70" Height="70">
+                        <Button.Content>
+                            <Image Source="/images/settings.png" />
+                        </Button.Content>
+                    </Button>
+                    <StackPanel Grid.Column="0" Grid.Row="1" Name="stckSett" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Brush Color"></TextBlock>
+                            <coding4fun:ColorPicker HorizontalAlignment="Stretch" Margin="5,5,5,5" Height="200" Name="colPicker" ColorChanged="colPicker_ColorChanged" />
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Brush size"></TextBlock>
+                            <Slider Minimum="20"  Maximum="100"  Name="sld" ></Slider>
+                        </StackPanel>
+                        <StackPanel >
+                            <TextBlock Text="Brush Shape"></TextBlock>
+                            <ListBox Name="lst" ItemsSource="{Binding}" DataContext="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Stretch" Height="100">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                            </ListBox>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Pressure sensitive"></TextBlock>
+                            <toolkit:ToggleSwitch Name="tgl"></toolkit:ToggleSwitch>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
                 <Canvas Name="canvas"  Margin="5,5,5,5" MouseMove="rct_MouseMove" >
                     <Rectangle MouseMove="rct_MouseMove" Name="rct" Fill="WhiteSmoke" Height="650" Width="470" Stroke="{StaticResource PhoneAccentBrush}"></Rectangle>
                 </Canvas>
@@ -51,7 +138,6 @@
         <shell:ApplicationBar IsVisible="True" Opacity="0.7" IsMenuEnabled="True" Mode="Minimized">
             <shell:ApplicationBarIconButton IconUri="/images/save.png" Text="save" x:Name="mnuSave" Click="mnuSave_Click"/>
             <shell:ApplicationBarIconButton IconUri="/images/clear.png" Text="clear" x:Name="mnuClear" Click="mnuClear_Click"/>
-            <shell:ApplicationBarIconButton IconUri="/images/settings.png" Text="settings" x:Name="mnuSettings" Click="mnuSettings_Click"/>
             <!--add picture-->
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>

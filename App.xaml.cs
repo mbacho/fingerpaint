@@ -66,10 +66,14 @@ namespace FingerPaint
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             IsolatedStorageSettings sets = IsolatedStorageSettings.ApplicationSettings;
-            if (!sets.Contains(SettingsPage.PREF_POINT)) { sets[SettingsPage.PREF_POINT] = 20; }
-            if (!sets.Contains(SettingsPage.PREF_PRESSURE)) { sets[SettingsPage.PREF_PRESSURE] = false; }
-            if (!sets.Contains(SettingsPage.PREF_SHAPE)) { sets[SettingsPage.PREF_SHAPE] = 0; }
-            if (!sets.Contains(SettingsPage.PREF_COLOR)) { sets[SettingsPage.PREF_COLOR] = 0; }
+            if (!sets.Contains(HomePage.PREF_POINT)) { sets[HomePage.PREF_POINT] = 20; }
+            if (!sets.Contains(HomePage.PREF_PRESSURE)) { sets[HomePage.PREF_PRESSURE] = false; }
+            if (!sets.Contains(HomePage.PREF_SHAPE)) { sets[HomePage.PREF_SHAPE] = 0; }
+
+            if (!sets.Contains(HomePage.PREF_COLOR_R)) { sets[HomePage.PREF_COLOR_R] = 0; }
+            if (!sets.Contains(HomePage.PREF_COLOR_G)) { sets[HomePage.PREF_COLOR_G] = 0; }
+            if (!sets.Contains(HomePage.PREF_COLOR_B)) { sets[HomePage.PREF_COLOR_B] = 0; }
+            if (!sets.Contains(HomePage.PREF_COLOR_A)) { sets[HomePage.PREF_COLOR_A] = 0; }
         }
 
         // Code to execute when the application is activated (brought to foreground)
