@@ -16,7 +16,7 @@
     mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
     shell:SystemTray.IsVisible="False">
     <phone:PhoneApplicationPage.Resources>
-        <converters:VisibleSelectedConverter x:Key="conv" />
+        <!--<converters:VisibleSelectedConverter x:Key="conv" />-->
         <Style TargetType="coding4fun:ColorSlider" x:Name="colSliderStyle">
             <Setter Property="Template">
                 <Setter.Value>
@@ -95,11 +95,12 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <coding4fun:ColorSlider HorizontalAlignment="Stretch" Color="{Binding ElementName=colPicker,Path=Color,Mode=TwoWay}" Height="70" Orientation="Horizontal" ColorChanged="colPicker_ColorChanged" Name="colSlider" Grid.Column="0" Grid.Row="0" />
-                    <Button Margin="0,0,0,0" Padding="0,0,0,0" Name="btnSetts" Click="btnSetts_Click" Grid.Column="1"  Grid.Row="0" Width="70" Height="70">
+                    <Image Source="/images/settings.png" Grid.Column="1"  Grid.Row="0"  Name="imgSett" Tap="imgSett_Tap" />
+                    <!--<Button Margin="0,0,0,0" Padding="0,0,0,0" Name="btnSetts" Click="btnSetts_Click" Grid.Column="1"  Grid.Row="0" Width="70" Height="70">
                         <Button.Content>
                             <Image Source="/images/settings.png" />
                         </Button.Content>
-                    </Button>
+                    </Button>-->
                     <StackPanel Grid.Column="0" Grid.Row="1" Name="stckSett" Visibility="Collapsed">
                         <StackPanel>
                             <TextBlock Text="Brush Color"></TextBlock>
@@ -120,7 +121,7 @@
                             </ListBox>
                         </StackPanel>
                         <StackPanel>
-                            <TextBlock Text="Pressure sensitive"></TextBlock>
+                            <TextBlock Text="Pressure sensitive" />
                             <toolkit:ToggleSwitch Name="tgl"></toolkit:ToggleSwitch>
                         </StackPanel>
                     </StackPanel>

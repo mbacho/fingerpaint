@@ -154,30 +154,19 @@ namespace FingerPaint.views
 
         private void btnSetts_Click(object sender, RoutedEventArgs e)
         {
+            toggleSettings();
+        }
+
+        private void toggleSettings(){
             System.Windows.Visibility vis = (stckSett.Visibility == System.Windows.Visibility.Collapsed) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed,
                                      visOpp = (vis == System.Windows.Visibility.Collapsed) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
             stckSett.Visibility = vis;
             colSlider.Visibility = visOpp;
+        
         }
-    }
-
-    public class VisibleSelectedConverter : IValueConverter
-    {
-
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        private void imgSett_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (value is ContentPresenter)
-            {
-                ContentPresenter content = (ContentPresenter)value;
-                if (content.Content is SolidColorBrush && content.Content.Equals(content.Content))
-                    return System.Windows.Visibility.Visible;
-            }
-            return System.Windows.Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return value;
+            toggleSettings();
         }
     }
 }
