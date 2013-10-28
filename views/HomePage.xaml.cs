@@ -52,8 +52,8 @@ namespace FingerPaint.views
             };
             lst.DataContext = shapeList;
             lst.SelectionChanged += (sender, args) => { sets[PREF_SHAPE] = lst.SelectedIndex; sets.Save(); rct.Stroke = ((Shape)lst.SelectedValue).Stroke; };
-            tgl.Checked += (sender,args) => { sets[PREF_PRESSURE] = tgl.IsChecked;sets.Save(); };
-            sld.ValueChanged += (sender,args) => { sets[PREF_POINT] = (int)sld.Value;sets.Save(); };
+            tgl.Checked += (sender, args) => { sets[PREF_PRESSURE] = tgl.IsChecked; sets.Save(); };
+            sld.ValueChanged += (sender, args) => { sets[PREF_POINT] = (int)sld.Value; sets.Save(); };
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -133,6 +133,30 @@ namespace FingerPaint.views
                 isofs.Close();
                 iso.DeleteFile(imgName);
             }
+            ToastPrompt tp = new ToastPrompt
+            {
+                //Title = "App.Current.Name",
+                Message = "Picture saved!",
+                FontSize = 30
+            };
+            tp.Show();
+        }
+
+        private void mnuAbout_Click(object sender, EventArgs e)
+        {
+            TextBlock tb = new TextBlock
+            {
+                Text = "Have fun with your finger and alot of paint, but don't make yourself dirty\n\nCreated by APP.CURRENT.AUTHOR",
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
+                TextWrapping = TextWrapping.Wrap,
+            };
+            AboutPrompt abt = new AboutPrompt
+            {
+                VersionNumber = "",
+                Body = tb
+            };
+            abt.Show();
         }
 
         private void mnuClear_Click(object sender, EventArgs e)
@@ -157,12 +181,13 @@ namespace FingerPaint.views
             toggleSettings();
         }
 
-        private void toggleSettings(){
+        private void toggleSettings()
+        {
             System.Windows.Visibility vis = (stckSett.Visibility == System.Windows.Visibility.Collapsed) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed,
                                      visOpp = (vis == System.Windows.Visibility.Collapsed) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
             stckSett.Visibility = vis;
             colSlider.Visibility = visOpp;
-        
+
         }
         private void imgSett_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {

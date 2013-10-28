@@ -95,12 +95,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <coding4fun:ColorSlider HorizontalAlignment="Stretch" Color="{Binding ElementName=colPicker,Path=Color,Mode=TwoWay}" Height="70" Orientation="Horizontal" ColorChanged="colPicker_ColorChanged" Name="colSlider" Grid.Column="0" Grid.Row="0" />
-                    <Image Source="/images/settings.png" Grid.Column="1"  Grid.Row="0"  Name="imgSett" Tap="imgSett_Tap" />
-                    <!--<Button Margin="0,0,0,0" Padding="0,0,0,0" Name="btnSetts" Click="btnSetts_Click" Grid.Column="1"  Grid.Row="0" Width="70" Height="70">
-                        <Button.Content>
-                            <Image Source="/images/settings.png" />
-                        </Button.Content>
-                    </Button>-->
+                    <Image Source="/images/settings.png" Grid.Column="1"  Grid.Row="0"  Name="imgSett" Tap="imgSett_Tap" Stretch="UniformToFill" />
                     <StackPanel Grid.Column="0" Grid.Row="1" Name="stckSett" Visibility="Collapsed">
                         <StackPanel>
                             <TextBlock Text="Brush Color"></TextBlock>
@@ -127,7 +122,7 @@
                     </StackPanel>
                 </Grid>
                 <Canvas Name="canvas"  Margin="5,5,5,5" MouseMove="rct_MouseMove" >
-                    <Rectangle MouseMove="rct_MouseMove" Name="rct" Fill="WhiteSmoke" Height="650" Width="470" Stroke="{StaticResource PhoneAccentBrush}"></Rectangle>
+                    <Rectangle MouseMove="rct_MouseMove" Name="rct" Fill="WhiteSmoke" Height="680" Width="470" Stroke="{StaticResource PhoneAccentBrush}"></Rectangle>
                 </Canvas>
             </StackPanel>
         </Grid>
@@ -139,6 +134,7 @@
         <shell:ApplicationBar IsVisible="True" Opacity="0.7" IsMenuEnabled="True" Mode="Minimized">
             <shell:ApplicationBarIconButton IconUri="/images/save.png" Text="save" x:Name="mnuSave" Click="mnuSave_Click"/>
             <shell:ApplicationBarIconButton IconUri="/images/clear.png" Text="clear" x:Name="mnuClear" Click="mnuClear_Click"/>
+            <shell:ApplicationBarIconButton IconUri="/images/info.png" Text="about" x:Name="mnuAbout" Click="mnuAbout_Click"/>
             <!--add picture-->
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
