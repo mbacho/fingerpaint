@@ -94,19 +94,19 @@
                         <RowDefinition Height="70" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <coding4fun:ColorSlider HorizontalAlignment="Stretch" Color="{Binding ElementName=colPicker,Path=Color,Mode=TwoWay}" Height="70" Orientation="Horizontal" ColorChanged="colPicker_ColorChanged" Name="colSlider" Grid.Column="0" Grid.Row="0" />
+                    <coding4fun:ColorSlider  Margin="10,0,0,0" HorizontalAlignment="Stretch" Color="{Binding ElementName=colPicker,Path=Color,Mode=TwoWay}" Height="70" Orientation="Horizontal" ColorChanged="colPicker_ColorChanged" Name="colSlider" Grid.Column="0" Grid.Row="0" />
                     <Image Source="/images/settings.png" Grid.Column="1"  Grid.Row="0"  Name="imgSett" Tap="imgSett_Tap" Stretch="UniformToFill" />
-                    <StackPanel Grid.Column="0" Grid.Row="1" Name="stckSett" Visibility="Collapsed">
+                    <StackPanel Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Name="stckSett" Visibility="Visible" Margin="10,0,10,0">
                         <StackPanel>
-                            <TextBlock Text="Brush Color"></TextBlock>
+                            <TextBlock Text="Brush Color" Margin="10,10,10,10" Style="{StaticResource PhoneTextLargeStyle}"></TextBlock>
                             <coding4fun:ColorPicker HorizontalAlignment="Stretch" Margin="5,5,5,5" Height="200" Name="colPicker" ColorChanged="colPicker_ColorChanged" />
                         </StackPanel>
                         <StackPanel>
-                            <TextBlock Text="Brush size"></TextBlock>
+                            <TextBlock Text="Brush size" Margin="10,10,10,10" Style="{StaticResource PhoneTextLargeStyle}"></TextBlock>
                             <Slider Minimum="20"  Maximum="100"  Name="sld" ></Slider>
                         </StackPanel>
                         <StackPanel >
-                            <TextBlock Text="Brush Shape"></TextBlock>
+                            <TextBlock Text="Brush Shape" Margin="10,0,10,10" Style="{StaticResource PhoneTextLargeStyle}"></TextBlock>
                             <ListBox Name="lst" ItemsSource="{Binding}" DataContext="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Stretch" Height="100">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -116,7 +116,7 @@
                             </ListBox>
                         </StackPanel>
                         <StackPanel>
-                            <TextBlock Text="Pressure sensitive" />
+                            <TextBlock Text="Pressure sensitive"  Margin="10,10,10,10" Style="{StaticResource PhoneTextLargeStyle}"/>
                             <toolkit:ToggleSwitch Name="tgl"></toolkit:ToggleSwitch>
                         </StackPanel>
                     </StackPanel>

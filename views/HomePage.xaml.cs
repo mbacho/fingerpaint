@@ -40,7 +40,13 @@ namespace FingerPaint.views
         public HomePage()
         {
             InitializeComponent();
-            SolidColorBrush scb = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
+            SolidColorBrush scb = new SolidColorBrush(new Color
+            {
+                R = (byte)(sets[PREF_COLOR_R]),
+                G = (byte)(sets[PREF_COLOR_G]),
+                B = (byte)(sets[PREF_COLOR_B]),
+                A = (byte)(sets[PREF_COLOR_A])
+            });
             Thickness m = new Thickness { Bottom = 10, Left = 10, Right = 10, Top = 10 };
             shapeList = new List<Shape>() { 
                 new Ellipse{Width=70, Height=70, Fill=scb,Stroke=scb, Margin=m},
@@ -50,6 +56,7 @@ namespace FingerPaint.views
                 new Rectangle{Width=70, Height=50, Fill=scb,Stroke=scb, Margin=m},
                 new Rectangle{Width=50, Height=70, Fill=scb,Stroke=scb, Margin=m}
             };
+            //TODO bind shape color to color picker
             lst.DataContext = shapeList;
             lst.SelectionChanged += (sender, args) => { sets[PREF_SHAPE] = lst.SelectedIndex; sets.Save(); rct.Stroke = ((Shape)lst.SelectedValue).Stroke; };
             tgl.Checked += (sender, args) => { sets[PREF_PRESSURE] = tgl.IsChecked; sets.Save(); };
@@ -187,7 +194,9 @@ namespace FingerPaint.views
                                      visOpp = (vis == System.Windows.Visibility.Collapsed) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
             stckSett.Visibility = vis;
             colSlider.Visibility = visOpp;
-
+            imgSett.Source = (vis == System.Windows.Visibility.Visible) ?
+                new BitmapImage(new Uri("/images/settings.dark.png", UriKind.RelativeOrAbsolute)) :
+                new BitmapImage(new Uri("/images/settings.png", UriKind.RelativeOrAbsolute));
         }
         private void imgSett_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
