@@ -42,21 +42,31 @@ namespace FingerPaint.views
             InitializeComponent();
             SolidColorBrush scb = new SolidColorBrush(new Color
             {
-                R = (byte)(sets[PREF_COLOR_R]),
-                G = (byte)(sets[PREF_COLOR_G]),
-                B = (byte)(sets[PREF_COLOR_B]),
-                A = (byte)(sets[PREF_COLOR_A])
+                R = byte.Parse(sets[PREF_COLOR_R].ToString()),
+                G = byte.Parse(sets[PREF_COLOR_G].ToString()),
+                B = byte.Parse(sets[PREF_COLOR_B].ToString()),
+                A = byte.Parse(sets[PREF_COLOR_A].ToString())
             });
             Thickness m = new Thickness { Bottom = 10, Left = 10, Right = 10, Top = 10 };
             shapeList = new List<Shape>() { 
-                new Ellipse{Width=70, Height=70, Fill=scb,Stroke=scb, Margin=m},
-                new Ellipse{Width=70, Height=50, Fill=scb,Stroke=scb, Margin=m},
-                new Ellipse{Width=50, Height=70, Fill=scb,Stroke=scb, Margin=m},
-                new Rectangle{Width=70, Height=70, Fill=scb,Stroke=scb, Margin=m},
-                new Rectangle{Width=70, Height=50, Fill=scb,Stroke=scb, Margin=m},
-                new Rectangle{Width=50, Height=70, Fill=scb,Stroke=scb, Margin=m}
+                new Ellipse { Width = 70, Height = 70, Margin = m },
+                new Ellipse{Width=70, Height=50, Margin=m,Fill=scb,Stroke=scb},
+                new Ellipse{Width=50, Height=70, Margin=m},
+                new Rectangle{Width=70, Height=70, Margin=m},
+                new Rectangle{Width=70, Height=50, Margin=m},
+                new Rectangle{Width=50, Height=70, Margin=m,}
             };
-            //TODO bind shape color to color picker
+            Binding b = new Binding
+            {
+                Source = colPicker,
+                Path = new PropertyPath("SolidColorBrush")
+            };
+            foreach (Shape i in shapeList)
+            {
+                BindingOperations.SetBinding(i, Ellipse.StrokeProperty, b);
+                BindingOperations.SetBinding(i, Ellipse.FillProperty, b);
+            }
+            
             lst.DataContext = shapeList;
             lst.SelectionChanged += (sender, args) => { sets[PREF_SHAPE] = lst.SelectedIndex; sets.Save(); rct.Stroke = ((Shape)lst.SelectedValue).Stroke; };
             tgl.Checked += (sender, args) => { sets[PREF_PRESSURE] = tgl.IsChecked; sets.Save(); };
