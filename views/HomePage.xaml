@@ -96,7 +96,7 @@
                     </Grid.RowDefinitions>
                     <coding4fun:ColorSlider  Margin="10,0,0,0" HorizontalAlignment="Stretch" Color="{Binding ElementName=colPicker,Path=Color,Mode=TwoWay}" Height="70" Orientation="Horizontal" ColorChanged="colPicker_ColorChanged" Name="colSlider" Grid.Column="0" Grid.Row="0" />
                     <Image Source="/images/settings.png" Grid.Column="1"  Grid.Row="0"  Name="imgSett" Tap="imgSett_Tap" Stretch="UniformToFill" />
-                    <StackPanel Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Name="stckSett" Visibility="Visible" Margin="10,0,10,0">
+                    <StackPanel Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Name="stckSett" Visibility="Collapsed" Margin="10,0,10,0">
                         <StackPanel>
                             <TextBlock Text="Brush Color" Margin="10,10,10,10" Style="{StaticResource PhoneTextLargeStyle}"></TextBlock>
                             <coding4fun:ColorPicker HorizontalAlignment="Stretch" Margin="5,5,5,5" Height="200" Name="colPicker" ColorChanged="colPicker_ColorChanged" />
@@ -110,15 +110,15 @@
                             <ListBox Name="lst" ItemsSource="{Binding}" DataContext="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Stretch" Height="100">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal"/>
+                                        <StackPanel Orientation="Horizontal" />
                                     </ItemsPanelTemplate>
                                 </ListBox.ItemsPanel>
                             </ListBox>
                         </StackPanel>
-                        <StackPanel>
+                        <!--<StackPanel>
                             <TextBlock Text="Pressure sensitive"  Margin="10,10,10,10" Style="{StaticResource PhoneTextLargeStyle}"/>
-                            <toolkit:ToggleSwitch Name="tgl"></toolkit:ToggleSwitch>
-                        </StackPanel>
+                            <toolkit:ToggleSwitch Name="tgl" Background="Transparent"></toolkit:ToggleSwitch>
+                        </StackPanel>-->
                     </StackPanel>
                 </Grid>
                 <Canvas Name="canvas"  Margin="5,5,5,5" MouseMove="rct_MouseMove" >

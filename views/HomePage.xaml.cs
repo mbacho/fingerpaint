@@ -17,18 +17,15 @@ namespace FingerPaint.views
 {
     public partial class HomePage : PhoneApplicationPage
     {
-        private int point;
-        private bool hasPressure;
         private IsolatedStorageSettings sets = IsolatedStorageSettings.ApplicationSettings;
 
         public readonly static string PREF_POINT = "point";
         public readonly static string PREF_SHAPE = "shape";
-        public readonly static string PREF_PRESSURE = "pressure";
+        //public readonly static string PREF_PRESSURE = "pressure";
         public readonly static string PREF_COLOR_A = "color_alpha";
         public readonly static string PREF_COLOR_R = "color_red";
         public readonly static string PREF_COLOR_G = "color_green";
         public readonly static string PREF_COLOR_B = "color_blue";
-        private SHAPES shape;
 
         public enum SHAPES
         {
@@ -40,17 +37,10 @@ namespace FingerPaint.views
         public HomePage()
         {
             InitializeComponent();
-            SolidColorBrush scb = new SolidColorBrush(new Color
-            {
-                R = byte.Parse(sets[PREF_COLOR_R].ToString()),
-                G = byte.Parse(sets[PREF_COLOR_G].ToString()),
-                B = byte.Parse(sets[PREF_COLOR_B].ToString()),
-                A = byte.Parse(sets[PREF_COLOR_A].ToString())
-            });
             Thickness m = new Thickness { Bottom = 10, Left = 10, Right = 10, Top = 10 };
             shapeList = new List<Shape>() { 
                 new Ellipse { Width = 70, Height = 70, Margin = m },
-                new Ellipse{Width=70, Height=50, Margin=m,Fill=scb,Stroke=scb},
+                new Ellipse{Width=70, Height=50, Margin=m,},
                 new Ellipse{Width=50, Height=70, Margin=m},
                 new Rectangle{Width=70, Height=70, Margin=m},
                 new Rectangle{Width=70, Height=50, Margin=m},
@@ -66,45 +56,78 @@ namespace FingerPaint.views
                 BindingOperations.SetBinding(i, Ellipse.StrokeProperty, b);
                 BindingOperations.SetBinding(i, Ellipse.FillProperty, b);
             }
+            BindingOperations.SetBinding(sld, Slider.ForegroundProperty, b);
             
             lst.DataContext = shapeList;
             lst.SelectionChanged += (sender, args) => { sets[PREF_SHAPE] = lst.SelectedIndex; sets.Save(); rct.Stroke = ((Shape)lst.SelectedValue).Stroke; };
-            tgl.Checked += (sender, args) => { sets[PREF_PRESSURE] = tgl.IsChecked; sets.Save(); };
+            //tgl.Checked += (sender, args) => { sets[PREF_PRESSURE] = tgl.IsChecked; sets.Save(); };
             sld.ValueChanged += (sender, args) => { sets[PREF_POINT] = (int)sld.Value; sets.Save(); };
+            loadSetts();
         }
-
-        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        private void saveSetts()
         {
-            base.OnNavigatingFrom(e);
             sets[PREF_COLOR_R] = colPicker.Color.R;
             sets[PREF_COLOR_G] = colPicker.Color.G;
             sets[PREF_COLOR_B] = colPicker.Color.B;
             sets[PREF_COLOR_A] = colPicker.Color.A;
 
-            sets[PREF_POINT] = point;
-            sets[PREF_PRESSURE] = hasPressure;
-            sets[PREF_SHAPE] = shape;
+            sets[PREF_POINT] = (int)sld.Value;
+            //sets[PREF_PRESSURE] = tgl.hasPressure;
+            sets[PREF_SHAPE] = lst.SelectedIndex;
             sets.Save();
+        }
+        private void loadSetts()
+        {
+            try
+            {
+                Color col = new Color
+                {
+                    R = byte.Parse(sets[PREF_COLOR_R].ToString()),
+                    G = byte.Parse(sets[PREF_COLOR_G].ToString()),
+                    B = byte.Parse(sets[PREF_COLOR_B].ToString()),
+                    A = byte.Parse(sets[PREF_COLOR_A].ToString()),
+                };
+                colSlider.Color = colPicker.Color = col;
+                //tgl.IsChecked = (bool)sets[PREF_PRESSURE]; 
+                lst.SelectedIndex = (int)sets[PREF_SHAPE];
+                sld.Value = (int)sets[PREF_POINT];
+            }catch(Exception ex){
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+#endif
+            }
+        }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (stckSett.Visibility == System.Windows.Visibility.Collapsed)
+            {
+                base.OnBackKeyPress(e);
+            }
+            else
+            {
+                e.Cancel = true;
+                toggleSettings();
+            }
+        }
+        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            saveSetts();
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (sets.Contains(PREF_POINT)) { point = (int)sets[PREF_POINT]; }
-            if (sets.Contains(PREF_PRESSURE)) { hasPressure = (bool)sets[PREF_PRESSURE]; }
-            if (sets.Contains(PREF_SHAPE)) { shape = (SHAPES)sets[PREF_SHAPE]; }
-            //if (sets.Contains(SettingsPage.PREF_COLOR)) { lstColor.SelectedIndex = (int)sets[SettingsPage.PREF_COLOR]; }
-            //if (sets.Contains(PREF_COLOR_R)) { colPicker.Color.R = colPicker.Color.R; }
-            //if (sets.Contains(PREF_COLOR_G)) { colPicker.Color.G = colPicker.Color.G; }
-            //if (sets.Contains(PREF_COLOR_B)) { colPicker.Color.B = colPicker.Color.B; }
-            //if (sets.Contains(PREF_COLOR_A)) { colPicker.Color.A = colPicker.Color.A; }
+            loadSetts();
         }
 
         private void rct_MouseMove(object sender, MouseEventArgs e)
         {
             Shape s = null;
-            int norm = (int)point; int change = 10;
-
+            int norm = (int)sets[PREF_POINT]; int change = 10;
+            SHAPES shape = (SHAPES)sets[PREF_SHAPE];
             switch (shape)
             {
                 case SHAPES.CIRCLE: s = new Ellipse { Width = norm, Height = norm }; break;
@@ -115,9 +138,10 @@ namespace FingerPaint.views
                 case SHAPES.SQUARE: s = new Rectangle { Width = norm, Height = norm }; break;
                 default: break;
             }
+            SolidColorBrush scb = new SolidColorBrush(new Color());
             foreach (StylusPoint p in e.StylusDevice.GetStylusPoints(canvas))
             {
-                paintShape(colPicker.SolidColorBrush, p, s);
+                paintShape(scb, p, s);
             }
         }
 
@@ -125,13 +149,19 @@ namespace FingerPaint.views
         {
             shape.SetValue(Canvas.LeftProperty, p.X - shape.Width / 2);
             shape.SetValue(Canvas.TopProperty, p.Y - shape.Height / 2);
-            if (hasPressure)
-                shape.Opacity = p.PressureFactor;
+            //if (hasPressure)
+            //    shape.Opacity = p.PressureFactor;
 #if DEBUG
             System.Diagnostics.Debug.WriteLine("pressure =" + p.PressureFactor);
 #endif
             shape.IsHitTestVisible = false;
-            shape.Stroke = shape.Fill = rct.Stroke;
+            shape.Stroke = shape.Fill = new SolidColorBrush(new Color
+            {
+                R = byte.Parse(sets[PREF_COLOR_R].ToString()),
+                G = byte.Parse(sets[PREF_COLOR_G].ToString()),
+                B = byte.Parse(sets[PREF_COLOR_B].ToString()),
+                A = byte.Parse(sets[PREF_COLOR_A].ToString()),
+            });
             canvas.Children.Add(shape);
         }
 
@@ -152,7 +182,6 @@ namespace FingerPaint.views
             }
             ToastPrompt tp = new ToastPrompt
             {
-                //Title = "App.Current.Name",
                 Message = "Picture saved!",
                 FontSize = 30
             };
@@ -163,7 +192,9 @@ namespace FingerPaint.views
         {
             TextBlock tb = new TextBlock
             {
-                Text = "Have fun with your finger and alot of paint, but don't make yourself dirty\n\nCreated by APP.CURRENT.AUTHOR",
+                Text = "Have fun with your finger and alot of colors, but don't make yourself dirty\n\nBy "
+                + Coding4Fun.Toolkit.Controls.Common.PhoneHelper.GetAppAttribute("Author")
+                + "\n\nVersion " + Coding4Fun.Toolkit.Controls.Common.PhoneHelper.GetAppAttribute("Version"),
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
                 VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
                 TextWrapping = TextWrapping.Wrap,
@@ -182,15 +213,11 @@ namespace FingerPaint.views
             canvas.Children.Add(rct);
         }
 
-        private void mnuSettings_Click(object sender, EventArgs e)
-        {
-            NavigationService.Navigate(new Uri("/views/SettingsPage.xaml", UriKind.Relative));
-        }
-
         private void colPicker_ColorChanged(object sender, Color color)
         {
             SolidColorBrush brush = ((ColorBaseControl)sender).SolidColorBrush;
             rct.Stroke = brush;
+            saveSetts();
         }
 
         private void btnSetts_Click(object sender, RoutedEventArgs e)

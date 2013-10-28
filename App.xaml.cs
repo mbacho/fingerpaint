@@ -67,13 +67,13 @@ namespace FingerPaint
         {
             IsolatedStorageSettings sets = IsolatedStorageSettings.ApplicationSettings;
             if (!sets.Contains(HomePage.PREF_POINT)) { sets[HomePage.PREF_POINT] = 20; }
-            if (!sets.Contains(HomePage.PREF_PRESSURE)) { sets[HomePage.PREF_PRESSURE] = false; }
+            //if (!sets.Contains(HomePage.PREF_PRESSURE)) { sets[HomePage.PREF_PRESSURE] = false; }
             if (!sets.Contains(HomePage.PREF_SHAPE)) { sets[HomePage.PREF_SHAPE] = 0; }
-
-            if (!sets.Contains(HomePage.PREF_COLOR_R)) { sets[HomePage.PREF_COLOR_R] = 0; }
-            if (!sets.Contains(HomePage.PREF_COLOR_G)) { sets[HomePage.PREF_COLOR_G] = 0; }
-            if (!sets.Contains(HomePage.PREF_COLOR_B)) { sets[HomePage.PREF_COLOR_B] = 0; }
-            if (!sets.Contains(HomePage.PREF_COLOR_A)) { sets[HomePage.PREF_COLOR_A] = 0; }
+            SolidColorBrush scb = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
+            if (!sets.Contains(HomePage.PREF_COLOR_R)) { sets[HomePage.PREF_COLOR_R] = scb.Color.R; }
+            if (!sets.Contains(HomePage.PREF_COLOR_G)) { sets[HomePage.PREF_COLOR_G] = scb.Color.G; }
+            if (!sets.Contains(HomePage.PREF_COLOR_B)) { sets[HomePage.PREF_COLOR_B] = scb.Color.B; }
+            if (!sets.Contains(HomePage.PREF_COLOR_A)) { sets[HomePage.PREF_COLOR_A] = scb.Color.A; }
         }
 
         // Code to execute when the application is activated (brought to foreground)
